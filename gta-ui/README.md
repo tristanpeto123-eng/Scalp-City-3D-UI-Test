@@ -12,8 +12,8 @@ Then visit http://localhost:8000/gta-ui/. An HTTPS static host also works. The W
 
 ## Controls
 
-- Desktop: WASD to walk; drag on the scene to look around; Shift to walk faster; E within lift range to travel to the next floor; P to show/hide the phone.
-- iPhone/touch: drag scene to look; hold on-screen arrows to walk; tap Enter Lift near the door; tap Phone for apps; tap Floors for quick travel.
+- Desktop: WASD to walk; drag on the scene to look around; Shift to walk faster; E within lift range to open the destination selector; P to show/hide the phone.
+- iPhone/touch: drag scene to look; hold on-screen arrows to walk; tap Select Floor near the door; tap Phone for apps; tap Floors for quick travel.
 - Tap a robot to inspect its department and open the associated existing functional application.
 - On the phone, choose an app icon. An original Lab page opens in an embedded browser. Expand to run it full-size. Phone Home returns to the app grid.
 
