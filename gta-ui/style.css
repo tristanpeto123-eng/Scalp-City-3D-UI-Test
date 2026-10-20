@@ -54,3 +54,11 @@
 .phone-head h2{font-weight:750}.phone-alert{background:#1b2731;border-color:#4a5b66}.app-symbol{border:1px solid #ffffff47;border-radius:18px;box-shadow:0 7px 18px #0006}
 @media(hover:none),(pointer:coarse){.touch-controls{display:block}.world-actions{bottom:calc(87px + env(safe-area-inset-bottom))}}
 @media(max-width:650px){.hud{padding:calc(12px + env(safe-area-inset-top)) 15px}.floor-readout strong{font-size:17px}.world-actions{right:16px}.footer-ribbon{display:none}.lift-prompt{bottom:calc(235px + env(safe-area-inset-bottom))}}
+
+/* Joystick hotfix: explicit phone breakpoint, safe-area and stacking. */
+@media(max-width:850px){
+  #touchControls.touch-controls{display:block!important;position:fixed!important;left:18px!important;bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;width:152px!important;height:170px!important;z-index:19!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  #joystickBase{display:block!important;touch-action:none!important}
+  #joystickKnob{display:block!important}
+}
+@media(max-width:380px){#touchControls.touch-controls{left:10px!important;bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}}
