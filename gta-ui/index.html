@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#070e1c">
   <title>Scalp City · Living Foundry V2 · Phase 1</title>
-  <link rel="stylesheet" href="./style.css?v=3.0.0">
+  <link rel="stylesheet" href="./style.css?v=3.1.0">
 </head>
 <body>
   <main id="app">
@@ -16,18 +16,18 @@
       <div class="floor-readout"><small id="floorIndex">FLOOR 01 / 06</small><strong id="floorName">Mission Control</strong><span id="floorRole">Operations hub</span></div>
       <div class="test-flag">UI TEST · SIMULATION ONLY</div>
     </header>
-    <aside class="side-hint" id="help">WASD or joystick move · Drag to orbit · E lift · P phone</aside>
+    <aside class="side-hint" id="help">WASD or joystick move · Drag to orbit · E choose lift floor · P phone</aside>
     <div id="robotInfo" class="robot-info" hidden>
       <button id="closeInfo" aria-label="Close inspector">×</button>
       <small id="robotLabel">STATION</small><strong id="robotName"></strong><p id="robotDescription"></p>
       <button id="robotOpen" class="accent-btn">OPEN RELATED APP ↗</button>
     </div>
-    <div class="lift-prompt" id="liftPrompt" hidden><span>◈ LIFT ACCESS</span><strong id="liftTarget">Next floor</strong><button id="liftButton" class="accent-btn">ENTER LIFT ↗</button><small>Keyboard: E</small></div>
+    <div class="lift-prompt" id="liftPrompt" hidden><span>◈ LIFT ACCESS</span><strong id="liftTarget">Next floor</strong><button id="liftButton" class="accent-btn">SELECT FLOOR ↗</button><small>Keyboard: E</small></div>
     <div class="world-actions">
       <button id="phoneToggle" class="phone-launch" aria-controls="phoneShell" aria-expanded="false" title="Open city phone">▦ <span>PHONE</span></button>
       <button id="floorsToggle" class="small-launch" aria-controls="floorMenu" aria-expanded="false">FLOORS</button>
     </div>
-    <nav id="floorMenu" class="floor-menu" hidden aria-label="Teleport to a floor"></nav>
+    <nav id="floorMenu" class="floor-menu" hidden aria-label="Choose tower floor"></nav>
     <div class="touch-controls" id="touchControls" aria-label="Analog movement joystick"><div id="joystickBase" class="joystick-base" role="group" aria-label="Drag joystick to move"><div class="joystick-ring"></div><div id="joystickKnob" class="joystick-knob"></div></div><span>MOVE</span></div>
     <section class="phone-shell" id="phoneShell" hidden aria-label="Scalp City smartphone">
       <div class="phone-device">
@@ -57,7 +57,7 @@
     </div>
     <div class="footer-ribbon"><span>SCALP CITY LAB / ISOLATED UI PROTOTYPE</span><a href="../mission-control.html" target="_blank" rel="noopener">ORIGINAL MISSION CONTROL ↗</a></div>
   </main>
-  <script type="module" src="./world-v2.js?v=3.0.0"></script>
+  <script type="module" src="./world-v2.js?v=3.1.0"></script>
   <script type="module" src="./phone.js"></script>
 </body>
 </html>
