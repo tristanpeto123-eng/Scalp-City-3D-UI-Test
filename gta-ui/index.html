@@ -16,7 +16,7 @@
       <div class="floor-readout"><small id="floorIndex">FLOOR 01 / 06</small><strong id="floorName">Mission Control</strong><span id="floorRole">Operations hub</span></div>
       <div class="test-flag">UI TEST · SIMULATION ONLY</div>
     </header>
-    <aside class="side-hint" id="help">WASD move · Drag to look · E at lift · P phone</aside>
+    <aside class="side-hint" id="help">WASD to move · Drag to look · E lift · P phone</aside>
     <div id="robotInfo" class="robot-info" hidden>
       <button id="closeInfo" aria-label="Close inspector">×</button>
       <small id="robotLabel">STATION</small><strong id="robotName"></strong><p id="robotDescription"></p>
@@ -28,13 +28,7 @@
       <button id="floorsToggle" class="small-launch" aria-controls="floorMenu" aria-expanded="false">FLOORS</button>
     </div>
     <nav id="floorMenu" class="floor-menu" hidden aria-label="Teleport to a floor"></nav>
-    <div class="touch-controls" id="touchControls" aria-label="Movement controls">
-      <button data-move="forward" class="up" aria-label="Walk forward">▲</button>
-      <button data-move="left" class="left" aria-label="Walk left">◀</button>
-      <button data-move="back" class="down" aria-label="Walk backward">▼</button>
-      <button data-move="right" class="right" aria-label="Walk right">▶</button>
-      <span>DRAG VIEW TO LOOK</span>
-    </div>
+    <div class="touch-controls" id="touchControls" aria-label="Analog movement joystick"><div id="joystickBase" class="joystick-base" role="group" aria-label="Drag joystick to move"><div class="joystick-ring"></div><div id="joystickKnob" class="joystick-knob"></div></div><span>MOVE</span></div>
     <section class="phone-shell" id="phoneShell" hidden aria-label="Scalp City smartphone">
       <div class="phone-device">
         <div class="phone-status"><span id="phoneClock">18:00</span><span>SC NETWORK <span class="bars">▂▄▆</span></span></div>
