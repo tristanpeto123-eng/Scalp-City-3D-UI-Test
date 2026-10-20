@@ -1,7 +1,7 @@
 name: GTA-style UI test
 on:
   push:
-    branches: [test/gta-phone-world-v1]
+    branches: [main]
     paths:
       - "gta-ui/**"
       - ".github/workflows/gta-phone-ui.yml"
@@ -21,7 +21,7 @@ jobs:
       - name: Check JavaScript syntax
         shell: bash
         run: |
-          cp gta-ui/world.js /tmp/scalp-world.mjs
+          cp gta-ui/world-v2.js /tmp/scalp-world.mjs
           cp gta-ui/phone.js /tmp/scalp-phone.mjs
           node --check /tmp/scalp-world.mjs
           node --check /tmp/scalp-phone.mjs
