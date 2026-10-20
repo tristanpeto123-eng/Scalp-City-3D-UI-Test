@@ -62,3 +62,9 @@
   #joystickKnob{display:block!important}
 }
 @media(max-width:380px){#touchControls.touch-controls{left:10px!important;bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}}
+
+/* PDCA P4: compact scroll-safe floor selector, reachable by touch and keyboard */
+.floor-menu{max-height:min(60dvh,460px);overflow-y:auto;overscroll-behavior:contain}
+.floor-menu button{min-height:44px;outline-offset:-3px}
+.floor-menu button:focus-visible,.lift-prompt button:focus-visible{outline:3px solid var(--gold)}
+@media(max-width:650px){.floor-menu{right:8px;left:8px;max-width:none;bottom:calc(162px + env(safe-area-inset-bottom));max-height:48dvh}}
