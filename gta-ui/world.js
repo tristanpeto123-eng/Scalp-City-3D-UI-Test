@@ -19,7 +19,7 @@ export const FLOORS = [
 window.ScalpWorld = {floors:FLOORS,teleport};
 let floorNumber = 0, scene, camera, renderer, stage, signTexture, robotMeshes=[], blockers=[], clock;
 let yaw=0,pitch=0,drag=null,wasDragged=false,paused=false,worldReady=false;
-const keys=new Set(),touchMoves=new Set(),raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+const keys=new Set(),touchMoves=new Set(),joystick={x:0,y:0},raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
 const material=(color,roughness=.6,metalness=.23)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 const emissive=(color,power=.7)=>new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:power,metalness:.33,roughness:.33});
 const mats={floor:material(0x152636,.78),wall:material(0x203347,.68),steel:material(0x293d4e,.4,.75),dark:material(0x0b1827,.6),glass:new THREE.MeshPhysicalMaterial({color:0x83cad2,transparent:true,opacity:.18,roughness:.2,depthWrite:false}),gold:emissive(palette.gold,.45),screen:emissive(0x2dbed1,.7)};
@@ -181,9 +181,10 @@ function updateHUD(){
 }
 function teleport(index){
   const target=Number(index);if(!Number.isInteger(target)||target<0||target>=FLOORS.length)return;
-  floorNumber=target;camera?.position.set(0,1.7,8.7);yaw=0;pitch=0;drag=null;keys.clear();touchMoves.clear();
+  floorNumber=target;camera?.position.set(0,1.7,8.7);yaw=0;pitch=0;drag=null;keys.clear();touchMoves.clear();joystick.x=joystick.y=0;resetJoystick();
   if(stage)buildStage(FLOORS[target]);updateHUD();$('floorMenu').hidden=true;$('floorsToggle').setAttribute('aria-expanded','false');
 }
+function resetJoystick(){joystick.x=0;joystick.y=0;const knob=$('joystickKnob');if(knob)knob.style.transform='translate(0px,0px)';}
 function updateMovement(dt){
   if(paused||!worldReady)return;
   let f=0,s=0;
@@ -191,6 +192,7 @@ function updateMovement(dt){
   if(keys.has('KeyS')||keys.has('ArrowDown')||touchMoves.has('back'))f-=1;
   if(keys.has('KeyA')||touchMoves.has('left'))s-=1;
   if(keys.has('KeyD')||touchMoves.has('right'))s+=1;
+  f+=-joystick.y;s+=joystick.x;
   if(keys.has('ArrowLeft'))yaw+=dt*1.4;
   if(keys.has('ArrowRight'))yaw-=dt*1.4;
   if(f||s){const norm=Math.hypot(f,s);f/=norm;s/=norm;
@@ -238,7 +240,7 @@ function attachHandlers(){
     if(/^(Key[WASD]|Arrow(Up|Down|Left|Right)|ShiftLeft)$/.test(e.code)){keys.add(e.code);e.preventDefault();}
   });
   window.addEventListener('keyup',e=>keys.delete(e.code));
-  window.addEventListener('blur',()=>{keys.clear();touchMoves.clear();});
+  window.addEventListener('blur',()=>{keys.clear();touchMoves.clear();resetJoystick();});
   const canvas=$('world');
   canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,id:e.pointerId};wasDragged=false;canvas.setPointerCapture?.(e.pointerId);});
   canvas.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id||paused)return;
@@ -252,6 +254,17 @@ function attachHandlers(){
     raycaster.setFromCamera(pointer,camera);
     const intersects=raycaster.intersectObjects(robotMeshes.map(r=>r.g),true);
     if(intersects.length&&intersects[0].distance<18)inspect(intersects[0]);});
+  const base=$('joystickBase'),knob=$('joystickKnob');let activePointer=null;
+  function setStick(e){const r=base.getBoundingClientRect(),radius=r.width*.34;
+    const dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+    const scale=Math.min(1,radius/(Math.hypot(dx,dy)||1));
+    joystick.x=dx*scale/radius;joystick.y=dy*scale/radius;
+    knob.style.transform='translate('+dx*scale+'px,'+dy*scale+'px)';
+  }
+  base.addEventListener('pointerdown',e=>{e.preventDefault();activePointer=e.pointerId;base.setPointerCapture(e.pointerId);setStick(e)});
+  base.addEventListener('pointermove',e=>{if(e.pointerId===activePointer)setStick(e)});
+  function release(e){if(e.pointerId!==activePointer)return;activePointer=null;resetJoystick();}
+  base.addEventListener('pointerup',release);base.addEventListener('pointercancel',release);base.addEventListener('lostpointercapture',release);
   for(const b of document.querySelectorAll('[data-move]')){
     const move=b.dataset.move;
     b.addEventListener('pointerdown',e=>{e.preventDefault();touchMoves.add(move);b.setPointerCapture?.(e.pointerId);});
