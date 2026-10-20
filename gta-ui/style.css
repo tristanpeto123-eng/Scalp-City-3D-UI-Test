@@ -29,3 +29,28 @@
 .phone-shell.maximized .phone-navigation{height:calc(25px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
 .native-floor{display:block;width:100%;border:1px solid #4a8191;background:#12344a;color:#e5f6fa;text-align:left;padding:13px 11px;margin:9px 0;border-radius:9px;font-weight:800}
 .native-floor:hover,.native-floor:focus-visible{border-color:var(--gold);color:var(--gold)}
+
+/* V2: restrained premium game HUD and touch-first analog movement */
+:root{--bg:#070b12;--panel:#111821;--line:#384454;--teal:#b7e8e2;--gold:#e8d8b8;--white:#f4f5f3;--muted:#9ba9b4}
+#world{background:#101821}
+.hud{padding:calc(18px + env(safe-area-inset-top)) clamp(16px,3vw,42px) 20px;background:linear-gradient(180deg,#05080bc9 0%,transparent 100%)}
+.crest{background:#e5d4b5;color:#151d25;border:0;border-radius:5px;box-shadow:0 4px 22px #0005;font-weight:950}
+.identity b{font-size:13px;letter-spacing:.18em}.identity small{color:#b3c2ca;letter-spacing:.11em}
+.floor-readout small{color:#d9c8a6}.floor-readout strong{font-weight:750;letter-spacing:-.035em}
+.test-flag{border-color:#57606b;background:#11192199;color:#d5d8d8}
+.world-actions{bottom:calc(42px + env(safe-area-inset-bottom));gap:12px}
+.phone-launch,.small-launch{border:1px solid #ffffff35;background:#121b24e8;backdrop-filter:blur(22px);border-radius:15px;box-shadow:0 8px 32px #0009;min-height:54px}
+.phone-launch{color:#e8d8b8}.phone-launch span{color:#f5f5f1}
+.floor-menu,.robot-info,.lift-prompt{background:#101820ed;border:1px solid #ffffff40;backdrop-filter:blur(24px);border-radius:17px}
+.accent-btn{background:#e9d7b5;color:#171d25;border-radius:10px}
+.touch-controls{display:none;position:absolute;left:clamp(18px,5vw,44px);bottom:calc(68px + env(safe-area-inset-bottom));width:152px;height:169px;z-index:8;user-select:none}
+.joystick-base{position:relative;width:144px;height:144px;border-radius:50%;touch-action:none;background:radial-gradient(circle,#26354099,#111923aa 70%);border:1px solid #e3eef04d;box-shadow:0 6px 35px #0007,inset 0 0 0 10px #ffffff08}
+.joystick-ring{position:absolute;inset:26px;border:1px solid #e2e8e63b;border-radius:50%;pointer-events:none}
+.joystick-knob{position:absolute;width:62px;height:62px;left:calc(50% - 31px);top:calc(50% - 31px);border-radius:50%;border:1px solid #ffffff91;background:linear-gradient(145deg,#d2dddcd9,#6f8995d9);box-shadow:0 4px 18px #0008,inset 0 2px 6px #fff5;pointer-events:none;will-change:transform}
+.touch-controls>span{position:absolute;left:0;top:151px;width:144px;text-align:center;color:#e6edecb0;font:800 10px ui-monospace,monospace;letter-spacing:.24em}
+.footer-ribbon{background:linear-gradient(0deg,#080d14d8,#080d1400);border:0;color:#9ba6ae}
+.phone-device{border-color:#151a22;background:#0c1017;box-shadow:inset 0 0 0 1px #7a838d,0 16px 55px #000c}
+.phone-inner{background:radial-gradient(ellipse at 72% 4%,#263745 0%,#111a27 43%,#0b101a 90%)}
+.phone-head h2{font-weight:750}.phone-alert{background:#1b2731;border-color:#4a5b66}.app-symbol{border:1px solid #ffffff47;border-radius:18px;box-shadow:0 7px 18px #0006}
+@media(hover:none),(pointer:coarse){.touch-controls{display:block}.world-actions{bottom:calc(87px + env(safe-area-inset-bottom))}}
+@media(max-width:650px){.hud{padding:calc(12px + env(safe-area-inset-top)) 15px}.floor-readout strong{font-size:17px}.world-actions{right:16px}.footer-ribbon{display:none}.lift-prompt{bottom:calc(235px + env(safe-area-inset-bottom))}}
