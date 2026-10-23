@@ -25,5 +25,6 @@ jobs:
           cp gta-ui/phone.js /tmp/scalp-phone.mjs
           node --check /tmp/scalp-world.mjs
           node --check /tmp/scalp-phone.mjs
+          node --check gta-ui/lift-navigation.mjs
       - name: Run app-route and simulation-safety tests
-        run: node --test gta-ui/smoke.test.mjs
+        run: node --test gta-ui/smoke.test.mjs gta-ui/lift-navigation.test.mjs

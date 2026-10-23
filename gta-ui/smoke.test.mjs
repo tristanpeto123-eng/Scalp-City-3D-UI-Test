@@ -49,3 +49,13 @@ test('phone supports full-screen, home, collapse, keyboard escape and floor cont
   assert.match(css,/\.native-floor/);
   assert.ok(phone.includes("appFrame"));
 });
+
+test('lift chooser opens a real destination menu and never teleports blindly on E',()=>{
+ assert.ok(world.includes("import {nearLift,chooseLiftFloor}"));
+ assert.match(world,/openFloorMenu\(\{physical:true\}\)/);
+ assert.match(world,/if\(e\.code==='KeyE'/);
+ assert.match(world,/closeFloorMenu\(\)/);
+ assert.match(html,/SELECT FLOOR/);
+ assert.match(world,/m\.querySelector\('button:not\(\[aria-current="true"\]\)'\)/);
+ assert.doesNotMatch(world,/liftButton'\)\.onclick=\(\)=>teleport/);
+});
