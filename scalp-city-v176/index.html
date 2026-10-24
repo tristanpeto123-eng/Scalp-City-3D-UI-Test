@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Scalp City v1.7.6 — Collisions, floors and controls</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#09131e;color:#e7f3fc;font:14px system-ui,-apple-system,Segoe UI,sans-serif}
+#game{display:none;position:fixed;inset:0;width:100vw;height:100dvh;border:0;background:#09131e}
+#splash{position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center;background:radial-gradient(circle at 50% 45%,#253e51,#09121e 65%)}
+.card{max-width:470px;width:100%;padding:28px 25px;border:1px solid #405e70;border-radius:18px;background:rgba(11,26,39,.89);box-shadow:0 18px 60px #02070b80}
+small{color:#9ab2c4;letter-spacing:.16em;font-weight:700}h1{font-size:27px;margin:10px 0 10px}p{color:#a7c0ce;line-height:1.6}#meter{height:6px;border-radius:9px;background:#334956;overflow:hidden;margin:22px 0 12px}
+#bar{height:100%;width:0;background:#64c6be;transition:width .3s}
+button{color:#061720;background:#74c4b9;border:0;padding:12px 18px;border-radius:9px;font-weight:700;cursor:pointer}
+#retry{display:none;margin-top:14px}#status{min-height:40px}
+</style>
+</head>
+<body>
+<div id="splash"><div class="card"><small>SCALP CITY · ENGINE V1.7.6</small><h1>Entering Scalp City</h1><p>Preparing your School, Trading Tower and approved robot models. No separate GLB downloads required.</p><div id="meter"><div id="bar"></div></div><p id="status" role="status">Loading engine components…</p><button id="retry" onclick="location.reload()">Retry loading</button></div></div>
+<iframe id="game" title="Scalp City 3D model and character controls" allow="fullscreen"></iframe>
+<script>
+(async()=>{const count=13,parts=Array(count),bar=document.getElementById('bar'),status=document.getElementById('status');
+try {
+ let received=0;
+ await Promise.all(Array.from({length:count},(_,i)=>(async()=>{
+  const file='../scalp-city-v172/chunks/part'+String(i).padStart(3,'0')+'.txt';
+  const response=await fetch(file,{cache:'force-cache'});
+  if(!response.ok)throw new Error(file+' returned HTTP '+response.status);
+  parts[i]=await response.text();
+  received++; bar.style.width=Math.round(received/count*100)+'%';
+  status.textContent='Downloading 3D engine and assets: '+received+' / '+count;
+ })()));
+ let page=parts.join('');
+ const modifications=[["cams.yaw=0.7;cams.pitch=.9;cams.dist=school?28:17;","cams.yaw=school?-.85:.65;cams.pitch=.31;cams.dist=school?8.3:9.4;"],["actorState.x=school?-22:21;actorState.y=school?[0,3.9,7.5][floor]:floor*3.9;actorState.z=0;","actorState.x=school?-32:21;actorState.y=school?[0,3.9,7.5][floor]:floor*3.9;actorState.z=school?-3:-4;"],["cams.dist=actorState.destination==='outside'?20:17","cams.dist=actorState.destination==='outside'?20:8.5"],["cams.dist=actorState.destination==='outside'?145:32","cams.dist=actorState.destination==='outside'?145:40"],["v1.7.2 · GLB engine test","v1.7.3 · Improved camera"],["<main><canvas id=\"view\"></canvas><button id=\"openPane\">Menu</button>","<main><canvas id=\"view\"></canvas><button id=\"openPane\">Menu</button><nav id=\"quick\"><button id=\"quickCampus\">Campus</button><button id=\"quickSchool\">School</button><button id=\"quickTower\">Tower</button><button id=\"quickZoomIn\">+</button><button id=\"quickZoomOut\">−</button></nav>"],["window.addEventListener('keydown',e=>{","$('quickCampus').onclick=()=>{$('floor').value='outside';teleport()};\n$('quickSchool').onclick=()=>{$('floor').value='s0';teleport()};\n$('quickTower').onclick=()=>{$('floor').value='t0';teleport()};\n$('quickZoomIn').onclick=()=>{cams.dist=Math.max(3.5,cams.dist*.75)};\n$('quickZoomOut').onclick=()=>{cams.dist=Math.min(220,cams.dist*1.33)};\nwindow.addEventListener('keydown',e=>{"],["</style></head><body>","#quick{position:absolute;z-index:5;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:5px;background:#101d29ed;border:1px solid #385368;border-radius:12px}#quick button{padding:8px 9px;font-weight:650;color:#dceef3;background:#243a49;font-size:11px;white-space:nowrap}#quick button:nth-last-child(-n+2){font-size:16px;min-width:31px}#hud{max-width:188px} @media(max-width:720px){#quick{bottom:159px;gap:3px;padding:4px}#quick button{padding:7px;font-size:10px}#hud{max-width:125px;padding:6px;font-size:9px}#joy{bottom:22px;left:18px}#run{bottom:35px;right:18px}}\n</style></head><body>"],["layout(location=4) in vec4 aWeight;","layout(location=4) in vec4 aWeight;layout(location=5) in vec4 aColor;"],["out vec3 vNorm;out vec2 vUV;out float vHeight;","out vec3 vNorm;out vec2 vUV;out float vHeight;out vec4 vVertexColor;out vec3 vWorld;"],["vUV=aUv;vHeight=w.y;","vUV=aUv;vHeight=w.y;vVertexColor=aColor;vWorld=w.xyz;"],["in vec3 vNorm;in vec2 vUV;in float vHeight;out vec4 outColor;","in vec3 vNorm;in vec2 vUV;in float vHeight;in vec4 vVertexColor;in vec3 vWorld;out vec4 outColor;"],["vec4 base=tex*uColor;","vec4 base=tex*uColor*vVertexColor;"],["float light=0.52+0.42*max(dot(normalize(vNorm),normalize(vec3(-0.5,1.0,0.7))),0.);","vec3 normal=normalize(cross(dFdx(vWorld),dFdy(vWorld)));float light=0.68+0.31*abs(dot(normal,normalize(vec3(-0.5,1.0,0.7))));"],["WEIGHTS_0:[1,0,0,0]","WEIGHTS_0:[1,0,0,0],COLOR_0:[1,1,1,1]"],["[4,'WEIGHTS_0',4]]","[4,'WEIGHTS_0',4],[5,'COLOR_0',4]]"],["color=pbr.baseColorFactor||[.72,.8,.86,1]","color=pbr.baseColorFactor||[1,1,1,1]"],["actorState.x+=rate*(lr*c+fw*s);actorState.z+=rate*(-lr*s+fw*c);actorState.x=Math.min(38,Math.max(-51,actorState.x));actorState.z=Math.min(35,Math.max(-31,actorState.z));actorState.dir=Math.atan2(lr*c+fw*s,-lr*s+fw*c);","actorState.x+=rate*(lr*c-fw*s);actorState.z+=rate*(-lr*s-fw*c);actorState.x=Math.min(38,Math.max(-51,actorState.x));actorState.z=Math.min(35,Math.max(-31,actorState.z));actorState.dir=Math.atan2(lr*c-fw*s,lr*s+fw*c);"],["v1.7.3 · Improved camera","v1.7.4 · Colours + fixed controls"],["dir:Math.PI,anim:","dir:Math.PI,turnTo:Math.PI,anim:"],["actorState.dir=Math.atan2(lr*c-fw*s,lr*s+fw*c);","actorState.turnTo=Math.atan2(lr*c-fw*s,-lr*s-fw*c);"],["last=t;resize();updateMovement(dt);","last=t;resize();updateMovement(dt);const turnDelta=Math.atan2(Math.sin(actorState.turnTo-actorState.dir),Math.cos(actorState.turnTo-actorState.dir));actorState.dir+=turnDelta*Math.min(1,dt*12);"],["v1.7.4 · Colours + fixed controls","v1.7.5 · Movement-facing + smooth turns"]];
+ for(const [before,after] of modifications){
+    if(page.split(before).length!==2)throw new Error('Engine patch missing or ambiguous: '+before.slice(0,50));
+    page=page.replace(before,after);
+ }
+
+ const runtimeResult=await fetch('./runtime.js',{cache:'no-store'});if(!runtimeResult.ok)throw new Error('Runtime physics script missing: '+runtimeResult.status);
+ const scRuntime=await runtimeResult.text();
+ if(scRuntime.length<7000||!scRuntime.includes('scBuildPhysics')||!scRuntime.includes('scFollowCamera'))throw new Error('Incomplete physics module');
+ function once(a,b){const hits=page.split(a).length-1;if(hits!==1)throw new Error('v1.7.6 patch mismatch '+a.slice(0,45)+' ('+hits+')');page=page.replace(a,b)}
+ once('</style></head><body>', '#interactAction{position:absolute;z-index:7;left:50%;bottom:215px;transform:translateX(-50%);background:#d4b77b;color:#132435;border:1px solid #fde5a6;font-weight:800;max-width:260px}#interactAction[hidden],#liftPanel[hidden]{display:none}#collisionInfo{position:absolute;left:50%;top:68px;transform:translateX(-50%);z-index:5;color:#f2d59e;background:#102637af;padding:6px 12px;border-radius:8px;font-size:11px}#liftPanel{position:absolute;z-index:8;inset:0;background:#03111acb;display:grid;place-content:center;padding:20px}#liftPanel .liftBox{background:#102631;border:1px solid #718c99;border-radius:15px;padding:21px;min-width:min(350px,90vw)}#liftPanel .liftBox select{margin:12px 0}#liftPanel .liftActions{display:flex;gap:10px}.field label.toggle{display:flex;align-items:center;gap:8px;font-size:12px;padding:5px 0;color:#dce9f0}input[type=checkbox]{accent-color:#74c4b9;width:17px;height:17px}input[type=range]{width:100%;accent-color:#74c4b9}@media(max-width:720px){#interactAction{bottom:210px;font-size:12px;padding:10px 13px}#collisionInfo{top:60px;max-width:75%;overflow:hidden;white-space:nowrap}}</style></head><body>');
+ once('<div class="field"><b>Display</b>', '<div class="field"><b>Movement assists</b><label class="toggle"><input type="checkbox" id="autoSprint" checked> Auto-sprint on joystick edge</label><label for="sprintRadius">Sprint start: <span id="sprintRadiusLabel">82%</span></label><input id="sprintRadius" type="range" min="60" max="95" step="1" value="82"><label class="toggle"><input type="checkbox" id="cameraTrack" checked> Camera tracks avatar direction</label><label class="toggle"><input type="checkbox" id="showCollisionInfo"> Collision diagnostics</label></div><div class="field"><b>Display</b>');
+ const stops=Array.from({length:11},(_,i)=>'<option value="t'+i+'">Tower '+i+(i===10?' · CEO':'')+'</option>').join('');
+ once('<div id="warning"></div><div id="joy">','<div id="warning"></div><div id="collisionInfo"></div><button id="interactAction" hidden>E · Interact</button><div id="liftPanel" hidden><div class="liftBox"><strong>TRADING TOWER LIFT</strong><p>Select a floor</p><select id="liftChoice">'+stops+'</select><div class="liftActions"><button id="liftGo">Travel</button><button id="liftClose">Cancel</button></div></div></div><div id="joy">');
+ once('Interiors are a **visual cutaway prototype**, not collision-tested.','Interiors have mesh-derived floor heights, collision proxies and interaction prompts.');
+ const prev=/function updateMovement\(dt\)\{[\s\S]*?\}\nfunction drawModel\(/;
+ if((page.match(prev)||[]).length!==1)throw new Error('Movement replacement failed');
+ page=page.replace(prev,'function updateMovement(dt){scControlMovement(dt)}\nfunction drawModel(');
+ once('function updateMovement(dt){scControlMovement(dt)}',scRuntime+'\nfunction updateMovement(dt){scControlMovement(dt)}');
+ once('actorState.dir+=turnDelta*Math.min(1,dt*12);gl.viewport','actorState.dir+=turnDelta*Math.min(1,dt*12);scFollowCamera(dt);gl.viewport');
+ once('let clipY=actorState.y+3.8;','let clipY=actorState.y+3.45;');
+ once('models[key]=buildDraws(parseGLB(fromBase64(EMBEDDED[key])));','const parsed=parseGLB(fromBase64(EMBEDDED[key]));if(key==="campus")scAlignFacade(parsed);models[key]=buildDraws(parsed);if(key==="campus")scBuildPhysics(models.campus);');
+ once('teleport();start=performance.now();','teleport();scSnapFloor();scShowAction();start=performance.now();');
+ once("$('floor').onchange=teleport;","$('floor').onchange=()=>{teleport();scSnapFloor();scBasis=null;scShowAction()};");
+ once("$('quickCampus').onclick=()=>{$('floor').value='outside';teleport()};","$('quickCampus').onclick=()=>scTeleport('outside');");
+ once("$('quickSchool').onclick=()=>{$('floor').value='s0';teleport()};","$('quickSchool').onclick=()=>scTeleport('s0');");
+ once("$('quickTower').onclick=()=>{$('floor').value='t0';teleport()};","$('quickTower').onclick=()=>scTeleport('t0');");
+ once('v1.7.5 · Movement-facing + smooth turns','v1.7.6 · Physics, controls and facade finishing');
+ window.__scalpCityAppliedFixes=modifications.length+16;
+ if(page.length<5400000||!page.includes('const EMBEDDED')||!page.includes('fromBase64(EMBEDDED'))throw new Error('Asset integrity check failed');
+ status.textContent='Starting the 3D engine…';
+ const frame=document.getElementById('game');
+ frame.addEventListener('load',()=>{frame.style.display='block';document.getElementById('splash').style.display='none'},{once:true});
+ frame.srcdoc=page;
+}catch(e){status.textContent='Unable to load the 3D assets: '+e.message;document.getElementById('retry').style.display='inline-block';console.error(e);}
+})();
+</script>
+</body></html>
