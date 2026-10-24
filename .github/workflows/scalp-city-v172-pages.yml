@@ -1,0 +1,46 @@
+name: Deploy Scalp City v1.7.2 to GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scalp-city-v172/**'
+      - '.github/workflows/scalp-city-v172-pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: scalp-city-pages
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate embedded assets
+        shell: bash
+        run: |
+          test -s scalp-city-v172/index.html
+          test "$(find scalp-city-v172/chunks -maxdepth 1 -type f -name 'part*.txt' | wc -l)" -eq 13
+          python3 - <<'PY'
+          from pathlib import Path
+          parts=sorted(Path('scalp-city-v172/chunks').glob('part*.txt'))
+          page=''.join(p.read_text() for p in parts)
+          assert len(page)>5_400_000
+          assert 'const EMBEDDED' in page and 'fromBase64(EMBEDDED' in page
+          print('Verified', len(parts), 'chunks,', len(page), 'embedded HTML characters')
+          PY
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./scalp-city-v172
+      - name: Deploy website
+        id: deploy
+        uses: actions/deploy-pages@v4
