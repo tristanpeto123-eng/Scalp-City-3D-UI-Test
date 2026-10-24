@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Scalp City v1.7.3 — Camera + mobile controls</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#09131e;color:#e7f3fc;font:14px system-ui,-apple-system,Segoe UI,sans-serif}
+#game{display:none;position:fixed;inset:0;width:100vw;height:100dvh;border:0;background:#09131e}
+#splash{position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center;background:radial-gradient(circle at 50% 45%,#253e51,#09121e 65%)}
+.card{max-width:470px;width:100%;padding:28px 25px;border:1px solid #405e70;border-radius:18px;background:rgba(11,26,39,.89);box-shadow:0 18px 60px #02070b80}
+small{color:#9ab2c4;letter-spacing:.16em;font-weight:700}h1{font-size:27px;margin:10px 0 10px}p{color:#a7c0ce;line-height:1.6}#meter{height:6px;border-radius:9px;background:#334956;overflow:hidden;margin:22px 0 12px}
+#bar{height:100%;width:0;background:#64c6be;transition:width .3s}
+button{color:#061720;background:#74c4b9;border:0;padding:12px 18px;border-radius:9px;font-weight:700;cursor:pointer}
+#retry{display:none;margin-top:14px}#status{min-height:40px}
+</style>
+</head>
+<body>
+<div id="splash"><div class="card"><small>SCALP CITY · ENGINE V1.7.3</small><h1>Entering Scalp City</h1><p>Preparing your School, Trading Tower and approved robot models. No separate GLB downloads required.</p><div id="meter"><div id="bar"></div></div><p id="status" role="status">Loading engine components…</p><button id="retry" onclick="location.reload()">Retry loading</button></div></div>
+<iframe id="game" title="Scalp City 3D model and character controls" allow="fullscreen"></iframe>
+<script>
+(async()=>{const count=13,parts=Array(count),bar=document.getElementById('bar'),status=document.getElementById('status');
+try {
+ let received=0;
+ await Promise.all(Array.from({length:count},(_,i)=>(async()=>{
+  const file='../scalp-city-v172/chunks/part'+String(i).padStart(3,'0')+'.txt';
+  const response=await fetch(file,{cache:'force-cache'});
+  if(!response.ok)throw new Error(file+' returned HTTP '+response.status);
+  parts[i]=await response.text();
+  received++; bar.style.width=Math.round(received/count*100)+'%';
+  status.textContent='Downloading 3D engine and assets: '+received+' / '+count;
+ })()));
+ let page=parts.join('');
+ const modifications=[["cams.yaw=0.7;cams.pitch=.9;cams.dist=school?28:17;","cams.yaw=school?-.85:.65;cams.pitch=.31;cams.dist=school?8.3:9.4;"],["actorState.x=school?-22:21;actorState.y=school?[0,3.9,7.5][floor]:floor*3.9;actorState.z=0;","actorState.x=school?-32:21;actorState.y=school?[0,3.9,7.5][floor]:floor*3.9;actorState.z=school?-3:-4;"],["cams.dist=actorState.destination==='outside'?20:17","cams.dist=actorState.destination==='outside'?20:8.5"],["cams.dist=actorState.destination==='outside'?145:32","cams.dist=actorState.destination==='outside'?145:40"],["v1.7.2 · GLB engine test","v1.7.3 · Improved camera"],["<main><canvas id=\"view\"></canvas><button id=\"openPane\">Menu</button>","<main><canvas id=\"view\"></canvas><button id=\"openPane\">Menu</button><nav id=\"quick\"><button id=\"quickCampus\">Campus</button><button id=\"quickSchool\">School</button><button id=\"quickTower\">Tower</button><button id=\"quickZoomIn\">+</button><button id=\"quickZoomOut\">−</button></nav>"],["window.addEventListener('keydown',e=>{","$('quickCampus').onclick=()=>{$('floor').value='outside';teleport()};\n$('quickSchool').onclick=()=>{$('floor').value='s0';teleport()};\n$('quickTower').onclick=()=>{$('floor').value='t0';teleport()};\n$('quickZoomIn').onclick=()=>{cams.dist=Math.max(3.5,cams.dist*.75)};\n$('quickZoomOut').onclick=()=>{cams.dist=Math.min(220,cams.dist*1.33)};\nwindow.addEventListener('keydown',e=>{"],["</style></head><body>","#quick{position:absolute;z-index:5;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:5px;background:#101d29ed;border:1px solid #385368;border-radius:12px}#quick button{padding:8px 9px;font-weight:650;color:#dceef3;background:#243a49;font-size:11px;white-space:nowrap}#quick button:nth-last-child(-n+2){font-size:16px;min-width:31px}#hud{max-width:188px} @media(max-width:720px){#quick{bottom:159px;gap:3px;padding:4px}#quick button{padding:7px;font-size:10px}#hud{max-width:125px;padding:6px;font-size:9px}#joy{bottom:22px;left:18px}#run{bottom:35px;right:18px}}\n</style></head><body>"]];
+ for(const [before,after] of modifications){
+    if(page.split(before).length!==2)throw new Error('Engine patch missing or ambiguous: '+before.slice(0,50));
+    page=page.replace(before,after);
+ }
+ window.__scalpCityAppliedFixes=modifications.length;
+ if(page.length<5400000||!page.includes('const EMBEDDED')||!page.includes('fromBase64(EMBEDDED'))throw new Error('Asset integrity check failed');
+ status.textContent='Starting the 3D engine…';
+ const frame=document.getElementById('game');
+ frame.addEventListener('load',()=>{frame.style.display='block';document.getElementById('splash').style.display='none'},{once:true});
+ frame.srcdoc=page;
+}catch(e){status.textContent='Unable to load the 3D assets: '+e.message;document.getElementById('retry').style.display='inline-block';console.error(e);}
+})();
+</script>
+</body></html>
